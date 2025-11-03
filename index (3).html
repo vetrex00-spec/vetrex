@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Smart Farm AI | المزارع الذكي</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+body{background:#eef9ef;direction:rtl;}
+.hidden{display:none;}
+/* Login */
+.login-container{
+  display:flex;justify-content:center;align-items:center;height:100vh;
+  background:linear-gradient(135deg,#00a86b,#0e6029);
+}
+.login-box{
+  background:#fff;padding:30px;border-radius:15px;width:330px;text-align:center;
+  box-shadow:0 0 15px rgba(0,0,0,0.2);
+}
+.login-box h2{color:#0e6029;margin-bottom:15px;}
+.login-box input{
+  width:100%;padding:10px;margin:10px 0;border:1px solid #ccc;border-radius:8px;text-align:center;
+}
+.login-box button{
+  background:#0e6029;color:white;border:none;padding:10px 20px;border-radius:8px;
+  cursor:pointer;width:100%;font-weight:bold;transition:0.3s;
+}
+.login-box button:hover{background:#00a86b;}
+/* Dashboard */
+.dashboard{padding:20px;text-align:center;}
+h1{color:#0e6029;}
+.btns{display:flex;flex-wrap:wrap;justify-content:center;margin-top:20px;gap:15px;}
+.btns button{
+  background:#00a86b;color:white;border:none;padding:15px 25px;border-radius:12px;
+  font-size:16px;cursor:pointer;transition:0.3s;
+}
+.btns button:hover{background:#0e6029;}
+.section{
+  margin:25px auto;padding:20px;background:white;border-radius:15px;
+  width:90%;max-width:600px;box-shadow:0 0 10px rgba(0,0,0,0.1);text-align:right;
+}
+label{display:block;margin:10px 0 5px;}
+input,select{width:100%;padding:8px;border:1px solid #ccc;border-radius:8px;}
+.tip{
+  background:#f0fff4;padding:15px;border-left:5px solid #00a86b;border-radius:10px;
+  margin-top:15px;font-style:italic;
+}
+/* Chatbot */
+.chat-box{
+  background:#fff;height:400px;overflow-y:auto;border-radius:15px;
+  padding:10px;box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+.message{margin:8px 0;padding:10px;border-radius:10px;max-width:80%;}
+.user{background:#d3f9d8;margin-left:auto;}
+.bot{background:#e7f3ff;color:#0e6029;}
+.chat-input{display:flex;margin-top:10px;}
+.chat-input input{flex:1;padding:10px;border-radius:10px;border:1px solid #ccc;}
+.chat-input button{margin-right:10px;background:#0e6029;color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;}
+.eng{color:#555;font-size:0.9em;font-style:italic;margin-top:3px;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage" class="login-container">
+  <div class="login-box">
+    <h2>🌿 Smart Farm AI</h2>
+    <input id="username" placeholder="اسم المستخدم / Username">
+    <input id="password" type="password" placeholder="كلمة المرور / Password">
+    <button onclick="login()">تسجيل الدخول | Login</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden dashboard">
+  <h1>👨‍🌾 المزارع الذكي - Smart Farm AI</h1>
+  <p>اختر خدمة / Choose a service:</p>
+  <div class="btns">
+    <button onclick="showSection('analysis')">💧 التحليل الزراعي | Analysis</button>
+    <button onclick="showSection('chatbot')">🤖 مساعد المزرعة | AI Chat</button>
+    <button onclick="showSection('tips')">🌱 نصيحة اليوم | Daily Tip</button>
+  </div>
+
+  <!-- Analysis -->
+  <div id="analysis" class="section hidden">
+    <h3>🔍 التحليل الذكي للري والأسمدة<br><span class="eng">Smart Analysis for Irrigation & Fertilization</span></h3>
+    <label>نوع المحصول / Crop</label>
+    <select id="crop">
+      <option>طماطم - Tomato</option><option>قمح - Wheat</option>
+      <option>بطاطس - Potato</option><option>ذرة - Corn</option>
+      <option>خيار - Cucumber</option>
+    </select>
+    <label>نوع التربة / Soil</label>
+    <select id="soil">
+      <option>طينية - Clay</option><option>رملية - Sandy</option><option>طميية - Loamy</option>
+    </select>
+    <label>درجة الحرارة (°C) / Temperature</label>
+    <input type="number" id="temp" placeholder="30">
+    <label>نسبة الرطوبة (%) / Humidity</label>
+    <input type="number" id="humidity" placeholder="60">
+    <button onclick="analyze()">حلل الآن | Analyze</button>
+    <div id="result" class="tip"></div>
+  </div>
+
+  <!-- Chatbot -->
+  <div id="chatbot" class="section hidden">
+    <h3>🤖 روبوت “مُسعد” الزراعي<br><span class="eng">AI Assistant “Mosaad”</span></h3>
+    <div class="chat-box" id="chatBox">
+      <div class="message bot">مرحبًا! أنا “مُسعد”، كيف أساعدك اليوم؟ 😊<br><span class="eng">Hello! I am Mosaad, how can I help you today?</span></div>
+    </div>
+    <div class="chat-input">
+      <input id="userMsg" placeholder="اكتب سؤالك هنا... / Type your question...">
+      <button onclick="sendMessage()">إرسال | Send</button>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div id="tips" class="section hidden">
+    <h3>🌿 نصيحة اليوم الزراعية<br><span class="eng">Daily Farm Tip</span></h3>
+    <div id="tipText" class="tip"></div>
+  </div>
+</div>
+
+<audio id="clickSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+
+<script>
+// Click Sound
+function playClick(){document.getElementById("clickSound").play();}
+
+// Login
+function login(){playClick();document.getElementById("loginPage").classList.add("hidden");document.getElementById("dashboard").classList.remove("hidden");showTip();}
+
+// Switch Sections
+function showSection(id){playClick();document.querySelectorAll(".section").forEach(s=>s.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");}
+
+// Analysis Logic
+function analyze(){
+  playClick();
+  let crop=document.getElementById("crop").value;
+  let soil=document.getElementById("soil").value;
+  let temp=parseFloat(document.getElementById("temp").value);
+  let humidity=parseFloat(document.getElementById("humidity").value);
+  let ar,en;
+
+  if(soil.includes("رمل") && temp>30){
+    ar=`🌞 الحرارة مرتفعة، يُفضل استخدام الري بالتنقيط للمحصول (${crop}) وتزويد الماء صباحًا فقط.`;
+    en=`🌞 The temperature is high; it is recommended to use drip irrigation for (${crop}) and water only in the morning.`;
+  } else if(soil.includes("طين") && humidity>70){
+    ar=`💧 التربة مشبعة، أوقف الري مؤقتًا لتجنب تعفن الجذور.`;
+    en=`💧 The soil is saturated; stop irrigation temporarily to avoid root rot.`;
+  } else {
+    ar=`🌱 الري بالرش مناسب في الظروف الحالية لمحصول (${crop}).`;
+    en=`🌱 Sprinkler irrigation is suitable for the current conditions of (${crop}).`;
+  }
+
+  ar+=`<br>🌿 استخدم 50% من الأسمدة العضوية بدل الكيماوية.`;
+  en+=`<br>🌿 Use 50% organic compost instead of chemical fertilizers.`;
+
+  document.getElementById("result").innerHTML=ar+`<br><span class='eng'>${en}</span>`;
+  speakBoth(ar,en);
+}
+
+// Chatbot
+function sendMessage(){
+  playClick();
+  let box=document.getElementById("chatBox");
+  let msg=document.getElementById("userMsg").value.trim();
+  if(!msg) return;
+  box.innerHTML+=`<div class='message user'>${msg}</div>`;
+  document.getElementById("userMsg").value="";
+  let reply=getBotReply(msg);
+  setTimeout(()=>{
+    box.innerHTML+=`<div class='message bot'>${reply}</div>`;
+    box.scrollTop=box.scrollHeight;
+    let ar=reply.split("<br>")[0];
+    let en=reply.split("<span class='eng'>")[1]?.replace("</span>","");
+    speakBoth(ar,en);
+  },600);
+}
+
+function getBotReply(msg){
+  msg=msg.toLowerCase();
+  if(msg.includes("سعر") && msg.includes("طماطم"))
+    return "سعر بذور الطماطم يتراوح بين 200 إلى 350 جنيه للكيلو.<br><span class='eng'>Tomato seeds cost between 200 and 350 EGP per kilo.</span>";
+  if(msg.includes("قمح"))
+    return "بذور القمح تتراوح من 12 إلى 18 جنيه للكيلو.<br><span class='eng'>Wheat seeds range from 12 to 18 EGP per kilo.</span>";
+  if(msg.includes("ري"))
+    return "أفضل نظام ري هو التنقيط لتقليل الفاقد والحفاظ على الماء.<br><span class='eng'>The best irrigation system is drip irrigation to reduce water loss.</span>";
+  if(msg.includes("سماد"))
+    return "استخدم الكمبوست العضوي بدلاً من الأسمدة الكيماوية لتحسين التربة.<br><span class='eng'>Use organic compost instead of chemical fertilizers to improve soil quality.</span>";
+  return "عذرًا، لم أفهم سؤالك جيدًا.<br><span class='eng'>Sorry, I didn’t understand your question clearly.</span>";
+}
+
+// Daily Tip
+function showTip(){
+  const tips=[
+    ["لا تروِ النباتات في منتصف النهار لتقليل التبخر.","Do not water plants at midday to reduce evaporation."],
+    ["أضف الكمبوست مرتين في الموسم لتحسين خصوبة التربة.","Add compost twice per season to improve soil fertility."],
+    ["راقب الرطوبة قبل الري لتوفير المياه.","Check soil moisture before watering to save water."],
+    ["استخدم الري بالتنقيط لتوزيع الماء بشكل متساوٍ.","Use drip irrigation for even water distribution."]
+  ];
+  let random=tips[Math.floor(Math.random()*tips.length)];
+  document.getElementById("tipText").innerHTML=random[0]+"<br><span class='eng'>"+random[1]+"</span>";
+  speakBoth(random[0],random[1]);
+}
+
+// Speech Function (Arabic then English)
+function speakBoth(ar,en){
+  let voices=speechSynthesis.getVoices();
+  let arVoice=voices.find(v=>v.lang.startsWith("ar")||v.name.toLowerCase().includes("arab")||v.name.toLowerCase().includes("hoda"));
+  let enVoice=voices.find(v=>v.lang.startsWith("en")||v.name.toLowerCase().includes("english"));
+
+  let arUtter=new SpeechSynthesisUtterance(ar.replace(/<[^>]+>/g,""));
+  arUtter.lang=arVoice?arVoice.lang:"ar-SA";
+  arUtter.voice=arVoice||null;
+  arUtter.rate=1;
+
+  let enUtter=new SpeechSynthesisUtterance(en.replace(/<[^>]+>/g,""));
+  enUtter.lang=enVoice?enVoice.lang:"en-US";
+  enUtter.voice=enVoice||null;
+  enUtter.rate=1;
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(arUtter);
+  arUtter.onend=()=>speechSynthesis.speak(enUtter);
+}
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = () => {};
+}
+</script>
+
+</body>
+</html>
